@@ -199,11 +199,15 @@ Corregir_MachineLearning <- function(dataset) {
   cat( "fin Corregir_MachineLearning()\n")
 }
 # Corregir utilizando MICE
-Corregir_MICE_Primera <- function(dataset) {
-  cat("inicio Corregir_MICE_Primera()\n")
+Corregir_MICE <- function(data) {
+  cat("inicio Corregir_MICE()\n")
+  
+  #Nulos
+  total_na <- sum(is.na(data))
+  cat("cantidad de nulos", total_na, "\n")
   
   # Realizar la imputación múltiple con MICE
-  imputed_data <- mice(dataset, m = 5, method = 'pmm', maxit = 50, seed = 100109)
+  imputed_data <- mice(data, m = 1, method = 'pmm', maxit = 1, seed = 100109)
   
   # Obtener solo la primera imputación completa
   first_imputed_data <- complete(imputed_data, action = 1)
@@ -217,7 +221,7 @@ Corregir_MICE_Primera <- function(dataset) {
   cat("el dataset imputed_data fue guardado en: ", output_file, "\n")
   cat("fin Corregir_MICE_Primera()\n")
   
-  dataset <- first_imputed_data
+  return(first_imputed_data)
 }
 
 
@@ -251,7 +255,7 @@ switch( envg$PARAM$metodo,
   "MachineLearning"     = Corregir_MachineLearning(dataset),
   "EstadisticaClasica"  = Corregir_EstadisticaClasica(dataset),
   "Ninguno"             = cat("No se aplica ninguna correccion.\n"),
-  "MICE"                = Corregir_MICE(dataset)
+  "MICE"                = dataset <-Corregir_MICE(dataset)
 )
 
 
