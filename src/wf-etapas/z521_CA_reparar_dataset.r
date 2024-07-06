@@ -220,6 +220,23 @@ Corregir_MICE <- function(dataset) {
   cat("fin Corregir_MICE()\n")
 }
 
+# Definimos la función Corregir_DROP
+Corregir_DROP <- function(dataset) {
+  # Calculamos la cantidad de valores nulos antes de eliminar filas
+  nulos_antes <- sum(is.na(dataset))
+  cat("Cantidad de valores nulos antes de eliminar filas: ", nulos_antes, "\n")
+  
+  # Utilizamos na.omit para eliminar las filas con valores nulos
+  dataset_limpio <- na.omit(dataset)
+  
+  # Calculamos la cantidad de valores nulos después de eliminar filas
+  nulos_despues <- sum(is.na(dataset_limpio))
+  cat("Cantidad de valores nulos después de eliminar filas: ", nulos_despues, "\n")
+  
+  dataset <- dataset_limpio
+}
+
+
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
@@ -250,7 +267,8 @@ switch( envg$PARAM$metodo,
   "MachineLearning"     = Corregir_MachineLearning(dataset),
   "EstadisticaClasica"  = Corregir_EstadisticaClasica(dataset),
   "Ninguno"             = cat("No se aplica ninguna correccion.\n"),
-  "MICE"                = Corregir_MICE(dataset)
+  "MICE"                = Corregir_MICE(dataset),
+  "DROP" = Corregir_DROP(dataset)
 )
 
 
