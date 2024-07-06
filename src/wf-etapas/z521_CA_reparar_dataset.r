@@ -14,6 +14,10 @@ require("yaml")
 # args <- c( "~/dm2024a" )
 args <- commandArgs(trailingOnly=TRUE)
 source( paste0( args[1] , "/src/lib/action_lib.r" ) )
+
+# Cargamos libreria MICE para imputacion de nulos
+library(mice)
+
 #------------------------------------------------------------------------------
 
 CorregirCampoMes <- function(pcampo, pmeses) {
@@ -194,6 +198,22 @@ Corregir_MachineLearning <- function(dataset) {
 
   cat( "fin Corregir_MachineLearning()\n")
 }
+# Corregir utilizando MICE
+Corregir_MICE_Primera <- function(dataset) {
+  cat("inicio Corregir_MICE_Primera()\n")
+  
+  # Realizar la imputación múltiple con MICE
+  imputed_data <- mice(dataset, m = 5, method = 'pmm', maxit = 50, seed = 100109)
+  
+  # Obtener solo la primera imputación completa
+  first_imputed_data <- complete(imputed_data, action = 1)
+  
+  cat("fin Corregir_MICE_Primera()\n")
+  
+  dataset <- first_imputed_data
+}
+
+
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
@@ -224,6 +244,7 @@ switch( envg$PARAM$metodo,
   "MachineLearning"     = Corregir_MachineLearning(dataset),
   "EstadisticaClasica"  = Corregir_EstadisticaClasica(dataset),
   "Ninguno"             = cat("No se aplica ninguna correccion.\n"),
+  "MICE"                = Corregir_MICE(dataset)
 )
 
 
