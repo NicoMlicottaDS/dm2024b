@@ -208,6 +208,13 @@ Corregir_MICE_Primera <- function(dataset) {
   # Obtener solo la primera imputación completa
   first_imputed_data <- complete(imputed_data, action = 1)
   
+
+  # Crear la ruta completa del archivo
+  output_file <- paste0(output_path, "/imputed_dataset.csv")
+  
+  # Guardar el dataset imputado en la carpeta especificada
+  write.csv(first_imputed_data, file = file.path(output_path), row.names = FALSE)
+  cat("el dataset imputed_data fue guardado en: ", output_file, "\n")
   cat("fin Corregir_MICE_Primera()\n")
   
   dataset <- first_imputed_data
