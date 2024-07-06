@@ -210,7 +210,7 @@ Corregir_MICE <- function(dataset) {
   non_all_na_vars <- filtered_vars[!apply(numeric_data[, filtered_vars, drop = FALSE], 2, function(x) all(is.na(x)))]
   
   # Aplicar MICE con método random forest
-    imputed_data <- mice(df[, non_all_na_vars, drop = FALSE], m = 5, method = 'rf', maxit = 20, seed = 100109 )
+    imputed_data <- mice(df[, non_all_na_vars, drop = FALSE], m = 5, method = 'rf', maxit = 20, seed = 100109, parallel = TRUE )
     
     # Actualizar el dataset original con los valores imputados
     for (var in non_all_na_vars) {
