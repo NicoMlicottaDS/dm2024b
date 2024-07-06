@@ -17,6 +17,7 @@ source( paste0( args[1] , "/src/lib/action_lib.r" ) )
 
 # Cargamos libreria MICE para imputacion de nulos
 library(mice)
+library(parallel)
 
 #------------------------------------------------------------------------------
 
@@ -207,19 +208,22 @@ Corregir_MICE <- function(data) {
   cat("cantidad de nulos", total_na, "\n")
   
   # Realizar la imputación múltiple con MICE
-  imputed_data <- mice(data, m = 1, method = 'pmm', maxit = 1, seed = 100109)
+  imputed_data <- mice(data, m = 1, method = 'rf', maxit = 1, seed = 1, parallel = TRUE)
   
   # Obtener solo la primera imputación completa
   first_imputed_data <- complete(imputed_data, action = 1)
   
+  total_na_imputed <- sum(is.na(first_imputed_data))
+  cat("cantidad de nulos imputed", total_na_imputed, "\n")
+  
 
   # Crear la ruta completa del archivo
-  output_file <- paste0(output_path, "/imputed_dataset.csv")
+  #output_file <- paste0(output_path, "/imputed_dataset.csv")
   
   # Guardar el dataset imputado en la carpeta especificada
-  write.csv(first_imputed_data, file = file.path(output_path), row.names = FALSE)
-  cat("el dataset imputed_data fue guardado en: ", output_file, "\n")
-  cat("fin Corregir_MICE_Primera()\n")
+ # write.csv(first_imputed_data, file = file.path(output_path), row.names = FALSE)
+  #cat("el dataset imputed_data fue guardado en: ", output_file, "\n")
+  #cat("fin Corregir_MICE_Primera()\n")
   
   return(first_imputed_data)
 }
