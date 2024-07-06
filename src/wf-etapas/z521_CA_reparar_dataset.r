@@ -19,6 +19,11 @@ source( paste0( args[1] , "/src/lib/action_lib.r" ) )
 library(mice)
 library(parallel)
 
+install.packages("missForest")
+install.packages("randomForest")
+library(missForest)
+library(randomForest)
+
 #------------------------------------------------------------------------------
 
 CorregirCampoMes <- function(pcampo, pmeses) {
@@ -237,6 +242,18 @@ Corregir_DROP <- function(dataset) {
 }
 
 
+# Definimos la función Corregir_MissForest
+Corregir_MissForest <- function(datos){
+  cat( "inicio Corregir_MissForest()\n")
+  
+  # Aplicar la imputación usando Random Forest
+  imputed_data <- missForest(datos)
+  dataset <- imputed_data$ximp
+  
+  cat( "fin Corregir_MissForest()\n")
+}
+
+
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui empieza el programa
@@ -268,7 +285,8 @@ switch( envg$PARAM$metodo,
   "EstadisticaClasica"  = Corregir_EstadisticaClasica(dataset),
   "Ninguno"             = cat("No se aplica ninguna correccion.\n"),
   "MICE"                = Corregir_MICE(dataset),
-  "DROP" = Corregir_DROP(dataset)
+  "DROP" = Corregir_DROP(dataset),
+  "RF" = Corregir_MissForest(dataset)
 )
 
 
