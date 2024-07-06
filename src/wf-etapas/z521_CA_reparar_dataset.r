@@ -199,35 +199,26 @@ Corregir_MachineLearning <- function(dataset) {
 
   cat( "fin Corregir_MachineLearning()\n")
 }
-# Corregir utilizando MICE
-Corregir_MICE <- function(data) {
+# Corregir utilizando MICE RF
+Corregir_MICE <- function(dataset) {
   cat("inicio Corregir_MICE()\n")
-  
-  #Nulos
-  total_na <- sum(is.na(data))
-  cat("cantidad de nulos", total_na, "\n")
-  
-  # Realizar la imputación múltiple con MICE
-  imputed_data <- mice(data, m = 1, method = 'rf', maxit = 1, seed = 1, parallel = TRUE)
-  
-  # Obtener solo la primera imputación completa
-  first_imputed_data <- complete(imputed_data, action = 1)
-  
-  total_na_imputed <- sum(is.na(first_imputed_data))
-  cat("cantidad de nulos imputed", total_na_imputed, "\n")
-  
 
-  # Crear la ruta completa del archivo
-  #output_file <- paste0(output_path, "/imputed_dataset.csv")
+  # Convertir a data frame
+  df <- as.data.frame(dataset)
   
-  # Guardar el dataset imputado en la carpeta especificada
- # write.csv(first_imputed_data, file = file.path(output_path), row.names = FALSE)
-  #cat("el dataset imputed_data fue guardado en: ", output_file, "\n")
-  #cat("fin Corregir_MICE_Primera()\n")
+  # Verificar si hay variables con todos los valores NA y removerlas
+  non_all_na_vars <- filtered_vars[!apply(numeric_data[, filtered_vars, drop = FALSE], 2, function(x) all(is.na(x)))]
   
-  return(first_imputed_data)
+  # Aplicar MICE con método random forest
+    imputed_data <- mice(df[, non_all_na_vars, drop = FALSE], m = 5, method = 'rf', maxit = 20, seed = 100109 )
+    
+    # Actualizar el dataset original con los valores imputados
+    for (var in non_all_na_vars) {
+      dataset[, (var) := complete(imputed_data, 1)[, var]]
+    }
+
+  cat("fin Corregir_MICE()\n")
 }
-
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
@@ -259,7 +250,7 @@ switch( envg$PARAM$metodo,
   "MachineLearning"     = Corregir_MachineLearning(dataset),
   "EstadisticaClasica"  = Corregir_EstadisticaClasica(dataset),
   "Ninguno"             = cat("No se aplica ninguna correccion.\n"),
-  "MICE"                = dataset <-Corregir_MICE(dataset)
+  "MICE"                = Corregir_MICE(dataset)
 )
 
 
