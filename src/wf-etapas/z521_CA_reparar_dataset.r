@@ -245,10 +245,19 @@ Corregir_DROP <- function(dataset) {
 # Definimos la función Corregir_MissForest
 Corregir_MissForest <- function(datos){
   cat( "inicio Corregir_MissForest()\n")
+  df <- datos %>% mutate_if(is.character, as.factor)
+  
+  
+  print("Datos faltantes antes de la imputación:")
+  print(sapply(df, function(x) sum(is.na(x))))
   
   # Aplicar la imputación usando Random Forest
-  imputed_data <- missForest(datos)
+  imputed_data <- missForest(df)
   dataset <- imputed_data$ximp
+  
+ # Mostrar datos faltantes después de la imputación
+  print("Datos faltantes después de la imputación:")
+  print(sapply(df_imputed, function(x) sum(is.na(x))))
   
   cat( "fin Corregir_MissForest()\n")
 }
