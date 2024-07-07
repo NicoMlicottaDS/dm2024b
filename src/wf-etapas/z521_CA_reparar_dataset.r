@@ -230,6 +230,10 @@ Corregir_MICE <- function(dataset) {
 
 # Definimos la función Corregir_DROP
 Corregir_DROP <- function(dataset) {
+  # Contabilizamos la cantidad de filas antes de eliminar filas con valores nulos
+  filas_antes <- nrow(dataset)
+  cat("Cantidad de filas antes de eliminar filas con valores nulos: ", filas_antes, "\n")
+  
   # Calculamos la cantidad de valores nulos antes de eliminar filas
   nulos_antes <- sum(is.na(dataset))
   cat("Cantidad de valores nulos antes de eliminar filas: ", nulos_antes, "\n")
@@ -237,12 +241,18 @@ Corregir_DROP <- function(dataset) {
   # Utilizamos na.omit para eliminar las filas con valores nulos
   dataset_limpio <- na.omit(dataset)
   
+  # Contabilizamos la cantidad de filas después de eliminar filas con valores nulos
+  filas_despues <- nrow(dataset_limpio)
+  cat("Cantidad de filas después de eliminar filas con valores nulos: ", filas_despues, "\n")
+  
   # Calculamos la cantidad de valores nulos después de eliminar filas
   nulos_despues <- sum(is.na(dataset_limpio))
   cat("Cantidad de valores nulos después de eliminar filas: ", nulos_despues, "\n")
   
+  # Asignamos el dataset limpio al original
   dataset <- dataset_limpio
 }
+
 
 
 # Definimos la función Corregir_MissForest
@@ -297,7 +307,7 @@ switch( envg$PARAM$metodo,
   "EstadisticaClasica"  = Corregir_EstadisticaClasica(dataset),
   "Ninguno"             = cat("No se aplica ninguna correccion.\n"),
   "MICE"                = Corregir_MICE(dataset),
-  "DROP" = Corregir_DROP(dataset),
+  "DROP_Count" = Corregir_DROP(dataset),
   "RF" = Corregir_MissForest(dataset)
 )
 
