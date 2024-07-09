@@ -206,24 +206,18 @@ Corregir_MachineLearning <- function(dataset) {
   dataset[foto_mes == 202006, cmobile_app_trx := NA]
 
   cat( "fin Corregir_MachineLearning()\n")
+  cat("derivo el dataset a MICE ()\n")
+  Corregir_MICE(dataset)
 }
 # Corregir utilizando MICE RF
 Corregir_MICE <- function(dataset) {
   cat("inicio Corregir_MICE()\n")
-
-  # Convertir a data frame
-  df <- as.data.frame(dataset)
-  
-  # Verificar si hay variables con todos los valores NA y removerlas
-  non_all_na_vars <- filtered_vars[!apply(numeric_data[, filtered_vars, drop = FALSE], 2, function(x) all(is.na(x)))]
   
   # Aplicar MICE con método random forest
-    imputed_data <- mice(df[, non_all_na_vars, drop = FALSE], m = 5, method = 'rf', maxit = 20, seed = 100109, parallel = TRUE )
+    imputed_data <- mice(dataset, m = 10, method = 'pmm', maxit = 50, seed = 1, parallel = TRUE )
     
     # Actualizar el dataset original con los valores imputados
-    for (var in non_all_na_vars) {
-      dataset[, (var) := complete(imputed_data, 1)[, var]]
-    }
+      dataset = complete(imputed_data, 1)
 
   cat("fin Corregir_MICE()\n")
 }
