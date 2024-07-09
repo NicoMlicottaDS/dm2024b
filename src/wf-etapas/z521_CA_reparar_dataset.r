@@ -16,8 +16,8 @@ args <- commandArgs(trailingOnly=TRUE)
 source( paste0( args[1] , "/src/lib/action_lib.r" ) )
 
 # Cargamos libreria MICE para imputacion de nulos
-#library(mice)
-#library(parallel)
+library(mice)
+library(parallel)
 
 #install.packages("missForest")
 #install.packages("randomForest")
