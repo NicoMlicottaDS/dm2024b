@@ -179,7 +179,7 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
   # parametros para que LightGBM se comporte como Random Forest
   param_local$lgb_param <- list(
     # parametros que se pueden cambiar
-    num_iterations = 20,
+    num_iterations = 50,
     num_leaves  = 16,
     min_data_in_leaf = 1000,
     feature_fraction_bynode  = 0.2,
@@ -261,14 +261,15 @@ TS_strategy_base9 <- function( pinputexps )
 
 
   param_local$future <- c(202109)
-  param_local$final_train <- c(202007, 202006, 202105, 202104,
-    202103, 202102, 202101, 202012, 202011)
+  param_local$final_train <- c(202107, 202106, 202105, 202104, 202103, 202102, 202101, 202012, 
+                               202011, 202010, 202009, 202008, 202007, 202005, 202004, 202003, 202002, 202001,
+                               201912, 201911,201910)
 
 
-  param_local$train$training <- c(202105, 202104, 202103,
-     202102, 202101, 202012, 202011, 202010, 202009)
+  param_local$train$training <- c(02105, 202104, 202103, 202102, 202101, 202012, 202011, 202010, 202009, 202008,
+                                  202007, 202005, 202004, 202003, 202002, 202001, 201912, 201911,201910)
   param_local$train$validation <- c(202106)
-  param_local$train$testing <- c(202107)
+  param_local$train$testing <- c(202107, 202106)
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
@@ -312,10 +313,10 @@ HT_tuning_base <- function( pinputexps, bypass=FALSE)
     force_row_wise = TRUE, # para reducir warnings
     verbosity = -100,
     max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
-    min_gain_to_split = 0.0, # min_gain_to_split >= 0.0
+   # min_gain_to_split = 0.0, # min_gain_to_split >= 0.0
     min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
-    lambda_l1 = 0.0, # lambda_l1 >= 0.0
-    lambda_l2 = 0.0, # lambda_l2 >= 0.0
+   # lambda_l1 = 0.0, # lambda_l1 >= 0.0
+   # lambda_l2 = 0.0, # lambda_l2 >= 0.0
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
     num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
 
@@ -334,7 +335,11 @@ HT_tuning_base <- function( pinputexps, bypass=FALSE)
     learning_rate = c( 0.02, 0.8 ),
     feature_fraction = c( 0.5, 0.9 ),
     num_leaves = c( 8L, 2048L,  "integer" ),
-    min_data_in_leaf = c( 100L, 10000L, "integer" )
+    min_data_in_leaf = c( 100L, 10000L, "integer" ),
+    
+    lambda_l1 = c(0, 600), # Cambio
+    lambda_l2 = c(0, 800), # Cambio
+    min_gain_to_split = c(0, 50) # Cambio
   )
 
 
@@ -390,9 +395,9 @@ wf_sept <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
   DT_incorporar_dataset_competencia2024()
-  CA_catastrophe_base( metodo="MachineLearning")
+  CA_catastrophe_base( metodo="Ninguno")
   FEintra_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
+  DR_drifting_base(metodo="uva")
   FEhist_base()
   FErf_attributes_base()
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
