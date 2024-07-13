@@ -264,14 +264,15 @@ TS_strategy_base9 <- function( pinputexps )
 
 
   param_local$future <- c(202109)
-  param_local$final_train <- c(202007, 202006, 202105, 202104,
-    202103, 202102, 202101, 202012, 202011)
-
-
-  param_local$train$training <- c(202105, 202104, 202103,
-     202102, 202101, 202012, 202011, 202010, 202009)
+  param_local$final_train <- c(202107, 202106, 202105, 202104, 202103, 202102, 202101, 202012, 
+                               202011, 202010, 202009, 202008, 202007, 202005, 202004, 202003, 202002, 202001,
+                               201912, 201911,201910)
+  
+  
+  param_local$train$training <- c(02105, 202104, 202103, 202102, 202101, 202012, 202011, 202010, 202009, 202008,
+                                  202007, 202005, 202004, 202003, 202002, 202001, 201912, 201911,201910)
   param_local$train$validation <- c(202106)
-  param_local$train$testing <- c(202107)
+  param_local$train$testing <- c(202107, 202106)
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
@@ -334,15 +335,17 @@ HT_tuning_base <- function( pinputexps, bypass=FALSE)
 
     extra_trees = FALSE,
     # Parte variable
-    learning_rate = c( 0.01, 0.2 ),
-    feature_fraction = c( 0.5, 0.9 ),
+    learning_rate = c(0.1),
+    feature_fraction = c(0.5),
     num_leaves = c( 8L, 2048L,  "integer" ),
-    min_data_in_leaf = c( 100L, 10000L, "integer" )
+    min_data_in_leaf = c( 100L, 10000L, "integer" ),
+    lambda_l1 = 10,
+    lambda_l2 = 10
   )
 
 
   # una Bayesian humilde, pero no descabellada
-  param_local$bo_iteraciones <- 60 # iteraciones de la Optimizacion Bayesiana
+  param_local$bo_iteraciones <- 100 # iteraciones de la Optimizacion Bayesiana
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -377,7 +380,7 @@ ZZ_final_semillerio_base9 <- function( pinputexps )
   # El parametro fundamental de semillerio
   # Es la cantidad de LightGBM's que ensamblo
   # cuanto mas grande mejor, pero asintotico
-  param_local$semillerio <- 30
+  param_local$semillerio <- 50
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -394,12 +397,12 @@ wf_sept_semillerio <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
   DT_incorporar_dataset_competencia2024()
-  CA_catastrophe_base( metodo="MachineLearning")
+  CA_catastrophe_base( metodo="Ninguno")
   FEintra_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
+  DR_drifting_base(metodo="uva")
   FEhist_base()
-  FErf_attributes_base()
-  #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+  #FErf_attributes_base()
+  CN_canaritos_asesinos_base(ratio=1.5, desvio=1.5)
 
   ts9 <- TS_strategy_base9()
   ht <- HT_tuning_base()
