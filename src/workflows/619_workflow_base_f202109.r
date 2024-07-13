@@ -332,8 +332,8 @@ HT_tuning_base <- function( pinputexps, bypass=FALSE)
 
     extra_trees = FALSE,
     # Parte variable
-    learning_rate = c( 0.02, 0.8 ),
-    feature_fraction = c( 0.5, 0.9 ),
+    learning_rate = c(0.1),
+    feature_fraction = c( 0.5),
     num_leaves = c( 8L, 2048L,  "integer" ),
     min_data_in_leaf = c( 100L, 10000L, "integer" ),
     
@@ -399,8 +399,8 @@ wf_sept <- function( pnombrewf )
   FEintra_base()
   DR_drifting_base(metodo="uva")
   FEhist_base()
-  FErf_attributes_base()
-  #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+  #FErf_attributes_base()
+  CN_canaritos_asesinos_base(ratio=1.5, desvio=1.5)
 
   ts9 <- TS_strategy_base9()
   ht <- HT_tuning_base()
